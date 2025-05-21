@@ -1,0 +1,94 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #0d1117;
+    color: #fff;
+    padding: 40px 20px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .container {
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  #search {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  
+  #suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    background: #1e1e2f;
+    border-radius: 6px;
+    display: none;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  #suggestions li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  #suggestions li:hover {
+    background: #2c2c3c;
+  }
+  
+  .chart-container {
+    overflow-x: auto;
+    margin-top: 20px;
+    background: #1e1e2f;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  canvas {
+    min-width: 1000px;
+    height: 400px !important;
+  }
+  
+  .centered {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  button {
+    padding: 12px 24px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background: #2563eb;
+  }
+  
+  #predictionReport {
+    margin-top: 30px;
+    background: #1e1e2f;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COIN-HUB Crypto Price Predictor</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🔎 Coin-Hub Crypto Price Predictor</h1>
+    <input type="text" id="search" placeholder="Search for a cryptocurrency..."/>
+    <ul id="suggestions"></ul>
+
+    <div class="chart-container" id="actualChartContainer" style="display:none;">
+      <canvas id="actualChart"></canvas>
+    </div>
+
+    <div class="centered">
+      <button onclick="generatePrediction()">📈 Predict Next 30 Days</button>
+    </div>
+
+    <div class="chart-container" id="predictedChartContainer" style="display:none;">
+      <canvas id="predictedChart"></canvas>
+    </div>
+
+    <div id="predictionReport" style="display:none;"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
