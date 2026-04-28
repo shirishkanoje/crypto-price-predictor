@@ -18,7 +18,7 @@ const actualCtx = document.getElementById("actualChart");
 const predictedCtx = document.getElementById("predictedChart");
 
 
-// ================= SEARCH (FAST)
+// ================= SEARCH
 searchInput.addEventListener("input", () => {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(fetchSuggestions, 400);
@@ -32,7 +32,6 @@ async function fetchSuggestions() {
     return;
   }
 
-  // CACHE
   if (cache[query]) {
     renderSuggestions(cache[query]);
     return;
@@ -44,18 +43,17 @@ async function fetchSuggestions() {
     );
 
     const data = await res.json();
-
     cache[query] = data.coins;
+
     renderSuggestions(data.coins);
 
   } catch (err) {
-    console.error("API error:", err);
+    console.error(err);
   }
 }
 
 function renderSuggestions(coins) {
   suggestionsBox.innerHTML = "";
-
   if (!coins.length) return;
 
   suggestionsBox.style.display = "block";
@@ -69,7 +67,6 @@ function renderSuggestions(coins) {
       selectedCoinId = coin.id;
       searchInput.value = coin.name;
       suggestionsBox.style.display = "none";
-
       loadHistoricalData();
     };
 
@@ -92,11 +89,6 @@ async function loadHistoricalData() {
     const data = await res.json();
     const prices = data.prices;
 
-    if (!prices || prices.length === 0) {
-      alert("No data found");
-      return;
-    }
-
     const map = new Map();
 
     prices.forEach(([time, price]) => {
@@ -111,7 +103,6 @@ async function loadHistoricalData() {
 
   } catch (err) {
     alert("Error loading data");
-    console.error(err);
   }
 
   isLoading = false;
@@ -140,12 +131,12 @@ function renderActualChart() {
 // ================= PREDICTION
 function generatePrediction() {
   if (isLoading) {
-    alert("Please wait, loading...");
+    alert("Wait loading...");
     return;
   }
 
   if (!historicalData.length) {
-    alert("Select a coin first");
+    alert("Select coin first");
     return;
   }
 
@@ -155,7 +146,8 @@ function generatePrediction() {
   futureLabels = [];
 
   for (let i = 1; i <= 30; i++) {
-    const value = last * (1 + 0.005 * i);
+    const random = (Math.random() - 0.5) * 0.02;
+    const value = last * (1 + 0.005 * i + random);
     predictedPrices.push(+value.toFixed(2));
 
     const d = new Date();
@@ -164,7 +156,7 @@ function generatePrediction() {
   }
 
   renderPredictedChart();
-  generateReport();
+  generateAdvancedReport(last);
 }
 
 
@@ -188,16 +180,63 @@ function renderPredictedChart() {
 }
 
 
-// ================= REPORT
-function generateReport() {
-  const avg = (predictedPrices.reduce((a, b) => a + b, 0) / predictedPrices.length).toFixed(2);
-  const min = Math.min(...predictedPrices).toFixed(2);
-  const max = Math.max(...predictedPrices).toFixed(2);
+// ================= ADVANCED REPORT
+function generateAdvancedReport(currentPrice) {
+
+  const max = Math.max(...predictedPrices);
+  const min = Math.min(...predictedPrices);
+
+  const maxProfit = (max - currentPrice).toFixed(2);
+  const maxLoss = (currentPrice - min).toFixed(2);
+
+  const avg = predictedPrices.reduce((a,b)=>a+b,0) / predictedPrices.length;
+
+  const volatility = ((max - min) / currentPrice * 100).toFixed(2);
+
+  // 💰 USER BUDGET (you can change default)
+  const budget = 1000;
+
+  const suggestedBuyPrice = min;
+  const quantity = Math.floor(budget / suggestedBuyPrice);
+
+  // 📊 Decision Logic
+  let decision = "";
+  if (avg > currentPrice && volatility < 15) {
+    decision = "✅ Good Buy Opportunity";
+  } else if (volatility > 25) {
+    decision = "⚠️ High Risk (Volatile)";
+  } else {
+    decision = "🤔 Hold / Wait";
+  }
 
   report.innerHTML = `
-    <h3>Prediction Summary</h3>
-    <p>Average: $${avg}</p>
-    <p>Min: $${min}</p>
-    <p>Max: $${max}</p>
+    <h2>📊 Full Analysis</h2>
+
+    <p><b>Current Price:</b> $${currentPrice}</p>
+    <p><b>Predicted Max Price:</b> $${max}</p>
+    <p><b>Predicted Min Price:</b> $${min}</p>
+
+    <hr>
+
+    <p><b>Max Profit:</b> $${maxProfit}</p>
+    <p><b>Max Loss:</b> $${maxLoss}</p>
+
+    <hr>
+
+    <p><b>Volatility:</b> ${volatility}%</p>
+    <p><b>Suggested Buy Price:</b> $${suggestedBuyPrice}</p>
+
+    <hr>
+
+    <p><b>Budget:</b> $${budget}</p>
+    <p><b>Suggested Quantity:</b> ${quantity} coins</p>
+
+    <hr>
+
+    <h3>${decision}</h3>
+
+    <p style="color:gray;font-size:12px;">
+      This is a simulated analysis, not financial advice.
+    </p>
   `;
 }
